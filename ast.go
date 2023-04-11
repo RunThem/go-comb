@@ -2,9 +2,8 @@ package comb
 
 import (
 	"fmt"
-	"strings"
-
 	vec "github.com/RunThem/u.go/vector"
+	"strings"
 )
 
 type Ast struct {
@@ -16,8 +15,12 @@ func NewAst(code string) *Ast {
 	return &Ast{code: code, forward: vec.New[*Ast](8)}
 }
 
-func (a *Ast) Add(ast *Ast) {
-	a.forward.Push(ast)
+func (a *Ast) Add(ast ...*Ast) {
+	a.forward.Push(ast...)
+}
+
+func (a *Ast) Size() int {
+	return a.forward.Size()
 }
 
 func (a *Ast) Dump() {
@@ -28,9 +31,11 @@ func (a *Ast) Dump() {
 
 	var dump func(a *Ast, level int)
 	dump = func(a *Ast, level int) {
-		if len(a.code) != 0 {
+		if a.Size() == 0 {
 			fmt.Printf("%s{'%s'}\n", strings.Repeat("    ", level), a.code)
 			return
+		} else {
+			fmt.Printf("%s{size %d}\n", strings.Repeat("    ", level), a.forward.Size())
 		}
 
 		for i := 0; i < a.forward.Size(); i++ {

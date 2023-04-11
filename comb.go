@@ -157,6 +157,43 @@ func maybe(c *Comb, in *Input) *Ast {
 	return a
 }
 
+func mayb1(c *Comb, in *Input) *Ast {
+	buf := make([]*Ast, 0, 8)
+	a := NewAst("")
+	one := false
+
+	for true {
+		idx := in.GetIdx()
+		i := 0
+		for ; i < c.forward.Size(); i++ {
+			ast := c.forward.At(i).Parse(in)
+			if ast == nil {
+				break
+			}
+
+			buf = append(buf, ast)
+		}
+
+		if i == c.forward.Size() {
+			one = true
+			for j := 0; j < len(buf); j++ {
+				a.forward.Push(buf[j])
+			}
+
+			buf = buf[:0]
+		} else {
+			in.SetIdx(idx)
+			break
+		}
+	}
+
+	if one {
+		return a
+	}
+
+	return nil
+}
+
 func (c *Comb) Parse(in *Input) *Ast {
 	switch c.tag {
 	case C_MATCH:
@@ -167,6 +204,8 @@ func (c *Comb) Parse(in *Input) *Ast {
 		return or(c, in)
 	case C_MAYBE:
 		return maybe(c, in)
+	case C_MAYB1:
+		return mayb1(c, in)
 	}
 
 	return nil
