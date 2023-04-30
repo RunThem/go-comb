@@ -1,0 +1,13 @@
+expr:0xc0001008d0 {C_AND ''} size 2
+    factor:0xc0001008a0 {C_OR ''} size 2
+        {C_ANY '[0-9]*'}
+        {C_AND ''} size 3
+            {C_MATCh '('}
+            {expr:0xc0001008d0}
+            {C_MATCh ')'}
+    {C_MAYB_1 ''} size 1
+        {C_AND ''} size 2
+            {C_OR ''} size 2
+                {C_MATCh '+'}
+                {C_MATCh '-'}
+            {factor:0xc0001008a0}
